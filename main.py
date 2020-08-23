@@ -1,14 +1,15 @@
 import pathlib
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from filters.notch_filters import IdealNotchFilter
+import cv2
+from filters.notch_filters import IdealNotchFilter, ButterworthNotchFilter, GaussianNotchFilter
 
-def set_plot_title(title):
-    plt.title(title, fontsize = 16)
+def set_plot_title(title, fs = 16):
+    plt.title(title, fontsize = fs)
 
 class MainApp:
     def __init__(self):
@@ -17,29 +18,42 @@ class MainApp:
         self.root.resizable(0, 0)
         self.root.title("Notch Filter")
         self.root.iconphoto(False, tk.PhotoImage(file = pathlib.Path("imgs/icon.png")))
-        #Hyperparams for notch
-        self.number_of_points = 3
         #setting up left side of GUI
         self.left_frame = tk.LabelFrame(text = "Original Image")
         self.original_img = tk.Label(self.left_frame, image = "", text = "Load an image \n to preview it here!", padx = 150, pady = 150)
         self.btn_browse_img = tk.Button(self.left_frame, text = "Browse Image", bg = "lightblue", command = self.browse_img)
         self.btn_apply_filter = tk.Button(self.left_frame, text = "Apply Filter", bg = "lightblue", command = self.apply_filter)
+        self.select_filter_var = tk.StringVar(self.root)
+        self.select_filter_var.set('Ideal')
+        self.select_filter = tk.OptionMenu(self.left_frame, self.select_filter_var, *{'Ideal', 'Butterworth', 'Gaussian'})
+        self.number_of_points = tk.Entry(self.left_frame)
+        self.frequancy = tk.Entry(self.left_frame)
         self.original_img.pack()
-        self.btn_browse_img.pack(in_ = self.left_frame, fill = tk.X)
-        self.btn_apply_filter.pack(in_ = self.left_frame, fill = tk.X)
+        self.btn_browse_img.pack(in_ = self.left_frame, fill = tk.BOTH)
+        self.btn_apply_filter.pack(in_ = self.left_frame, fill = tk.BOTH)
+        tk.Label(self.left_frame, text = "Select type of Notch Filter: ").pack()
+        self.select_filter.pack()
+        tk.Label(self.left_frame, text = "Number of Points: ").pack()
+        self.number_of_points.pack()
+        self.number_of_points.insert(tk.END, '6')
+        tk.Label(self.left_frame, text = "Cut-off frequancy(in case of IdealNotchFilter): ").pack()
+        self.frequancy.pack()
+        self.frequancy.insert(tk.END, '121.0')
         self.left_frame.pack(in_ = self.root, side = tk.LEFT, fill = tk.BOTH)
         #setting up Right side of GUI
         self.right_frame = tk.LabelFrame(text = "Filtered Image")
         self.filter_img = tk.Label(self.right_frame, image = "", text = "Apply filter to an image\nto view it here !", padx = 150, pady = 150)
         self.btn_save_img = tk.Button(self.right_frame, text = "Save this Image", bg = "lightblue", command = self.save_img)
+        self.btn_summary = tk.Button(self.right_frame, text = "Show Summary",  bg = "lightblue", command = self.show_summary)
         self.filter_img.pack()
         self.btn_save_img.pack(in_ = self.right_frame, fill = tk.X)
+        self.btn_summary.pack(in_ = self.right_frame, fill = tk.X)
         self.right_frame.pack() 
         
     def browse_img(self):
         try:
-            file = filedialog.askopenfilename(title = "Load Image", filetypes=[('Images',['*jpeg','*png','*jpg'])]) 
-            file = Image.open(file).convert('LA')
+            file = filedialog.askopenfilename(title = "Load Image", filetypes=[('Images', ['*jpeg','*png','*jpg'])]) 
+            file = ImageOps.grayscale((Image.open(file)))
             file.save(pathlib.Path("tmp/original_img.png"))
             file = ImageTk.PhotoImage(file)
             self.original_img.configure(text = "", image = file)
@@ -48,24 +62,60 @@ class MainApp:
         except Exception as e:
             messagebox.showerror("An error occured !", e)
 
+    def get_fshift_and_save_magnitude_spectrum(self):
+        img = Image.open(pathlib.Path("tmp/original_img.png"))
+        img = np.asarray(img)
+        f = np.fft.fft2(img)
+        fshift = np.fft.fftshift(f)
+        magnitude_spectrum = 20 * np.log(np.abs(fshift))
+        matplotlib.image.imsave(pathlib.Path("tmp/magnitude_spectrum.png"), magnitude_spectrum, cmap = "gray")
+        return fshift
+                
     def apply_filter(self):
         try:
+            fshift = self.get_fshift_and_save_magnitude_spectrum()
             plt.clf()
-            plt.imshow(Image.open(pathlib.Path("tmp/original_img.png")), cmap = "gray")
+            plt.imshow(Image.open(pathlib.Path("tmp/magnitude_spectrum.png")), cmap = "gray")
             set_plot_title("Click on image to choose points. (Press any key to Start)")
             plt.waitforbuttonpress()
-            set_plot_title(f'Select {self.number_of_points} points with mouse click')
-            points = np.asarray(plt.ginput(self.number_of_points, timeout=-1))
+            set_plot_title(f'Select {self.number_of_points.get()} points with mouse click')
+            points = np.asarray(plt.ginput(int(self.number_of_points.get()), timeout = -1))
             plt.close()
-            self.filter_img.configure(text = "", image = self.original_img.image)
+            #Applying filter
+            if self.select_filter_var.get() == "Ideal":
+                IdealNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+            elif self.select_filter_var.get() == "Butterworth":
+                ButterworthNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+            elif self.select_filter_var.get() == "Gaussian":
+                GaussianNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+            #Show filtered image
+            filter_img = ImageTk.PhotoImage(ImageOps.grayscale((Image.open(pathlib.Path("tmp/filtered_img.png")))))
+            self.filter_img.configure(text = "", image = filter_img)
             self.filter_img.text = ""
-            self.filter_img.image = self.original_img.image
+            self.filter_img.image = filter_img
         except Exception as e:
             messagebox.showerror("An error occured!", e)
             
     def save_img(self):
         directory = filedialog.asksaveasfilename(title = "Save Image", filetypes=[('Images',['*jpeg','*png','*jpg'])])
         print(directory)
+        
+    def save_magnitude_spectrum(self, path, save_path):
+        img = ImageOps.grayscale((Image.open(path)))
+        img = np.asarray(img)
+        f = np.fft.fft2(img)
+        fshift = np.fft.fftshift(f)
+        magnitude_spectrum = 20 * np.log(np.abs(fshift))
+        matplotlib.image.imsave(save_path, magnitude_spectrum, cmap = "gray")
+        
+    def show_summary(self):
+        f, axarr = plt.subplots(2,2)
+        axarr[0,0].imshow(Image.open(pathlib.Path("tmp/original_img.png")), cmap = "gray")
+        axarr[0,1].imshow(Image.open(pathlib.Path("tmp/filtered_img.png")), cmap = "gray")
+        axarr[1,0].imshow(Image.open(pathlib.Path("tmp/magnitude_spectrum.png")), cmap = "gray")
+        self.save_magnitude_spectrum(pathlib.Path("tmp/filtered_img.png"), pathlib.Path("tmp/tms.png"))
+        axarr[1,1].imshow(Image.open(pathlib.Path("tmp/tms.png")), cmap = "gray")
+        plt.show()
         
     def run(self):
         self.root.mainloop()
