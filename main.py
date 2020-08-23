@@ -34,7 +34,7 @@ class MainApp:
         self.select_filter_var.set('Ideal')
         self.select_filter = tk.OptionMenu(self.left_frame, self.select_filter_var, *{'Ideal', 'Butterworth', 'Gaussian'})
         self.number_of_points = tk.Entry(self.left_frame)
-        self.frequancy = tk.Entry(self.left_frame)
+        self.frequency = tk.Entry(self.left_frame)
         self.original_img.grid(row = 0, column = 0, columnspan = 2)
         self.btn_browse_img.grid(row = 1, column = 0, sticky='nsew')
         self.btn_apply_filter.grid(row = 1, column = 1, sticky='nsew')
@@ -43,10 +43,10 @@ class MainApp:
         tk.Label(self.left_frame, text = "Number of Points: ").grid(row = 3, column = 0, sticky = 'nsew')
         self.number_of_points.grid(row = 3, column = 1, sticky = 'nsew')
         self.number_of_points.insert(tk.END, '6')
-        tk.Label(self.left_frame, text = "Cut-off frequancy: ").grid(row = 4, column = 0, sticky = 'nsew')
-        self.frequancy.grid(row = 4, column = 1, sticky = 'nsew')
-        self.frequancy.insert(tk.END, '121.0')
-        self.left_frame.pack(in_ = self.root, side = tk.LEFT, fill = tk.BOTH)
+        tk.Label(self.left_frame, text = "Cut-off frequency: ").grid(row = 4, column = 0, sticky = 'nsew')
+        self.frequency.grid(row = 4, column = 1, sticky = 'nsew')
+        self.frequency.insert(tk.END, '121.0')
+        self.left_frame.pack(side = "left", fill = tk.Y)
         #setting up Right side of GUI
         self.right_frame = tk.LabelFrame(text = "Filtered Image")
         self.filter_img = tk.Label(self.right_frame, image = "", text = "Apply filter to an image\nto view it here !", padx = 150, pady = 150)
@@ -55,7 +55,7 @@ class MainApp:
         self.filter_img.pack()
         self.btn_save_img.pack(in_ = self.right_frame, fill = tk.X)
         self.btn_summary.pack(in_ = self.right_frame, fill = tk.X)
-        self.right_frame.pack() 
+        self.right_frame.pack(side = "right", fill = tk.Y) 
         
     def browse_img(self):
         try:
@@ -90,11 +90,11 @@ class MainApp:
             plt.close()
             #Applying filter
             if self.select_filter_var.get() == "Ideal":
-                IdealNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+                IdealNotchFilter().apply_filter(fshift, points, float(self.frequency.get()), pathlib.Path("tmp/filtered_img.png"))
             elif self.select_filter_var.get() == "Butterworth":
-                ButterworthNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+                ButterworthNotchFilter().apply_filter(fshift, points, float(self.frequency.get()), pathlib.Path("tmp/filtered_img.png"))
             elif self.select_filter_var.get() == "Gaussian":
-                GaussianNotchFilter().apply_filter(fshift, points, float(self.frequancy.get()), pathlib.Path("tmp/filtered_img.png"))
+                GaussianNotchFilter().apply_filter(fshift, points, float(self.frequency.get()), pathlib.Path("tmp/filtered_img.png"))
             #Show filtered image
             filter_img = ImageTk.PhotoImage(ImageOps.grayscale((Image.open(pathlib.Path("tmp/filtered_img.png")))))
             self.filter_img.configure(text = "", image = filter_img)
@@ -104,9 +104,11 @@ class MainApp:
             messagebox.showerror("An error occured!", e)
             
     def save_img(self):
-        directory = filedialog.asksaveasfilename(title = "Save Image", filetypes=[('Images',['*jpeg','*png','*jpg'])])
-        print(directory)
-        
+        try:
+            directory = filedialog.asksaveasfilename(title = "Save Image", filetypes=[('Images',['*jpeg','*png','*jpg'])])
+            Image.open(pathlib.Path("tmp/filtered_img.png")).save(directory)
+        except Exception as e:
+            messagebox.showerror("An error occured!", e)        
     def save_magnitude_spectrum(self, path, save_path):
         img = ImageOps.grayscale((Image.open(path)))
         img = np.asarray(img)
@@ -129,3 +131,4 @@ class MainApp:
 
 if __name__ == "__main__":
     MainApp().run()
+    
