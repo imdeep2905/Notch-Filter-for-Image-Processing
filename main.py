@@ -74,15 +74,15 @@ class MainApp:
         img = np.asarray(img)
         f = np.fft.fft2(img)
         fshift = np.fft.fftshift(f)
-        magnitude_spectrum = 20 * np.log(np.abs(fshift))
-        matplotlib.image.imsave(pathlib.Path("tmp/magnitude_spectrum.png"), magnitude_spectrum, cmap = "gray")
+        dft = 20 * np.log(np.abs(fshift))
+        matplotlib.image.imsave(pathlib.Path("tmp/dft.png"), dft, cmap = "gray")
         return fshift
                 
     def apply_filter(self):
         try:
             fshift = self.get_fshift_and_save_magnitude_spectrum()
             plt.clf()
-            plt.imshow(Image.open(pathlib.Path("tmp/magnitude_spectrum.png")), cmap = "gray")
+            plt.imshow(Image.open(pathlib.Path("tmp/dft.png")), cmap = "gray")
             set_plot_title("Click on image to choose points. (Press any key to Start)")
             plt.waitforbuttonpress()
             set_plot_title(f'Select {self.number_of_points.get()} points with mouse click')
@@ -114,16 +114,16 @@ class MainApp:
         img = np.asarray(img)
         f = np.fft.fft2(img)
         fshift = np.fft.fftshift(f)
-        magnitude_spectrum = 20 * np.log(np.abs(fshift))
-        matplotlib.image.imsave(save_path, magnitude_spectrum, cmap = "gray")
+        dft = 20 * np.log(np.abs(fshift))
+        matplotlib.image.imsave(save_path, dft, cmap = "gray")
         
     def show_summary(self):
         f, axarr = plt.subplots(2,2)
         axarr[0,0].imshow(Image.open(pathlib.Path("tmp/original_img.png")), cmap = "gray")
         axarr[0,1].imshow(Image.open(pathlib.Path("tmp/filtered_img.png")), cmap = "gray")
-        axarr[1,0].imshow(Image.open(pathlib.Path("tmp/magnitude_spectrum.png")), cmap = "gray")
-        self.save_magnitude_spectrum(pathlib.Path("tmp/filtered_img.png"), pathlib.Path("tmp/tms.png"))
-        axarr[1,1].imshow(Image.open(pathlib.Path("tmp/tms.png")), cmap = "gray")
+        axarr[1,0].imshow(Image.open(pathlib.Path("tmp/dft.png")), cmap = "gray")
+        self.save_magnitude_spectrum(pathlib.Path("tmp/filtered_img.png"), pathlib.Path("tmp/tdft"))
+        axarr[1,1].imshow(Image.open(pathlib.Path("tmp/tdft")), cmap = "gray")
         plt.show()
         
     def run(self):

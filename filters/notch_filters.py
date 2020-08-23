@@ -14,7 +14,7 @@ class IdealNotchFilter:
                 for k in range(len(points)):
                     m = points[k][0]
                     n = points[k][1]
-                    if(((m - j)*(m-j) )+((n - i)*(n-i)) < freq):
+                    if(pow(n - i, 2) + pow(m - j, 2) <= freq):
                         fshift[i][j] = 0
 
         f_ishift = np.fft.ifftshift(fshift)
