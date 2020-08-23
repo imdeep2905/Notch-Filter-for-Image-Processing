@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from filters.notch_filters import IdealNotchFilter
 
 def set_plot_title(title):
     plt.title(title, fontsize = 16)
@@ -50,13 +51,11 @@ class MainApp:
     def apply_filter(self):
         try:
             plt.clf()
-            plt.setp(plt.gca(), autoscale_on = False)
-            plt.imshow(matplotlib.image.imread(pathlib.Path("tmp/original_img.png")), cmap=plt.get_cmap('gray'))
+            plt.imshow(Image.open(pathlib.Path("tmp/original_img.png")), cmap = "gray")
             set_plot_title("Click on image to choose points. (Press any key to Start)")
             plt.waitforbuttonpress()
-            set_plot_title(f'Select {self.number_of_points} points with mouse')
-            pts = np.asarray(plt.ginput(self.number_of_points, timeout=-1))
-            print(pts)
+            set_plot_title(f'Select {self.number_of_points} points with mouse click')
+            points = np.asarray(plt.ginput(self.number_of_points, timeout=-1))
             plt.close()
             self.filter_img.configure(text = "", image = self.original_img.image)
             self.filter_img.text = ""

@@ -3,9 +3,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-class notchFilter:
+class IdealNotchFilter:
     def __init__(self):
         pass
+    
     def applyFilter(self,path,x,y):
         img = cv2.imread(path,0)
 
@@ -33,13 +34,12 @@ class notchFilter:
         plt.show()
 
 
-if __name__ == "__main__":
-    j = notchFilter()
-    j.applyFilter('  ',[100,135,125,115,150,125],[50,50,44,149,150,156])
-
-
-              
 '''
+if __name__ == "__main__":
+    j = IdealNotchFilter()
+    j.applyFilter('  ',[100,135,125,115,150,125],[50,50,44,149,150,156])
+             
+
 list for image 13
 x = [100,135,125,115,150,125]
 y = [50,50,44,149,150,156]
