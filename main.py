@@ -90,7 +90,7 @@ class MainApp:
         return fshift, dft
                 
     def apply_filter(self):
-        #try:
+        try:
             self.info_lbl.configure(text = "BUSY")
             self.info_lbl.text = "BUSY"
             fshift, dft = self.get_fshift_and_save_dft()
@@ -114,9 +114,8 @@ class MainApp:
             filter_img = ImageTk.PhotoImage(ImageOps.grayscale((Image.open(pathlib.Path("tmp/filtered_img.png")))))
             self.filter_img.configure(image = filter_img)
             self.filter_img.image = filter_img
-        #except Exception as e:
-        #    print(e, e.__traceback__)
-        #    messagebox.showerror("An error occured!", e)
+        except Exception as e:
+            messagebox.showerror("An error occured!", e)
             
     def save_img(self):
         try:
