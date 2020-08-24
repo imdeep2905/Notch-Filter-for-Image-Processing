@@ -90,7 +90,7 @@ class MainApp:
         return fshift, dft
                 
     def apply_filter(self):
-        try:
+        #try:
             self.info_lbl.configure(text = "BUSY")
             self.info_lbl.text = "BUSY"
             fshift, dft = self.get_fshift_and_save_dft()
@@ -109,14 +109,14 @@ class MainApp:
             elif self.select_filter_var.get() == "Gaussian":
                 GaussianNotchFilter().apply_filter(fshift, points, float(self.frequency.get()), pathlib.Path("tmp/filtered_img.png"))
             self.info_lbl.configure(text = "READY")
-            self.info_lbl = "READY"
+            self.info_lbl.text = "READY"
             #Show filtered image
             filter_img = ImageTk.PhotoImage(ImageOps.grayscale((Image.open(pathlib.Path("tmp/filtered_img.png")))))
-            self.filter_img.configure(text = "", image = filter_img)
-            self.filter_img.text = ""
+            self.filter_img.configure(image = filter_img)
             self.filter_img.image = filter_img
-        except Exception as e:
-            messagebox.showerror("An error occured!", e)
+        #except Exception as e:
+        #    print(e, e.__traceback__)
+        #    messagebox.showerror("An error occured!", e)
             
     def save_img(self):
         try:
@@ -124,6 +124,7 @@ class MainApp:
             Image.open(pathlib.Path("tmp/filtered_img.png")).save(directory)
         except Exception as e:
             messagebox.showerror("An error occured!", e)        
+            
     def save_dft(self, path, save_path):
         img = ImageOps.grayscale((Image.open(path)))
         img = np.asarray(img)
