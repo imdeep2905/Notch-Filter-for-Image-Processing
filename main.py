@@ -7,6 +7,10 @@ import matplotlib.pyplot as plt
 import matplotlib
 import cv2
 from filters.notch_filters import IdealNotchFilter, ButterworthNotchFilter, GaussianNotchFilter
+import os 
+
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
 
 def set_plot_title(title, fs = 16):
     plt.title(title, fontsize = fs)
