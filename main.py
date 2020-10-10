@@ -8,6 +8,7 @@ import matplotlib
 import cv2
 from filters.notch_filters import IdealNotchFilter, ButterworthNotchFilter, GaussianNotchFilter
 import os 
+from ctypes import *
 
 if not os.path.exists('tmp'):
     os.makedirs('tmp')
@@ -18,7 +19,9 @@ def set_plot_title(title, fs = 16):
 class MainApp:
     def __init__(self):
         #Seeting up root
+        windll.shcore.SetProcessDpiAwareness(1)
         self.root = tk.Tk()
+        self.root.tk.call('tk', 'scaling', 1.5) # To get bigger window on higher resolution displays
         self.root.resizable(0, 0)
         self.root.title("Notch Filter")
         self.root.iconphoto(False, tk.PhotoImage(file = pathlib.Path("imgs/icon.png")))
