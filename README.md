@@ -10,6 +10,7 @@ Three varients of the Notch Filters are implemented:
 # Demo Run
 
 1. Running ```main.py``` will give follwing screen:
+
 <p align="center">
   <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo1.PNG">
 </p>
