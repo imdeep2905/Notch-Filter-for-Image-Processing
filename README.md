@@ -10,21 +10,32 @@ Three varients of the Notch Filters are implemented:
 # Demo Run
 
 1. Running ```main.py``` will give follwing screen:
-
-![Demo1](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo1.PNG)
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo1.PNG">
+</p>
 
 2. Select an image on which you want to apply the filter.
 
-![Demo2](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo2.PNG)
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo2.PNG">
+</p>
 
 3. Select points to apply filter.
 
-![Demo3](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo3.PNG) 
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo3.PNG">
+</p>
 
-![Demo4](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo4.PNG)
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo4.PNG">
+</p>
 
 4. Side by side comparison.
 
-![Demo5](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo5.PNG)
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo5.PNG">
+</p>
 
-![Demo6](https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo6.PNG)
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo6.PNG">
+</p>
