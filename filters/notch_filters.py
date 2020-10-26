@@ -21,8 +21,6 @@ class IdealNotchFilter:
                     d2 = pow(pow(u + u0, 2) + pow(v + v0, 2), 1)
                     if d1 <= d0 or d2 <= d0:
                         fshift[u][v] *= 0.0
-                    #if pow(v - u0, 2) + pow(u - v0, 2) <= d0:
-                    #    fshift[u][v] = 0.0
         f_ishift = np.fft.ifftshift(fshift)
         img_back = np.fft.ifft2(f_ishift)
         img_back = np.abs(img_back)
