@@ -40,3 +40,23 @@ Three varients of the Notch Filters are implemented:
 <p align="center">
   <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Demo6.PNG">
 </p>
+
+# Some Examples
+
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Working1.PNG">
+</p>
+
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Working2.PNG">
+</p>
+
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Working3.PNG">
+</p>
+
+<p align="center">
+  <img src="https://github.com/imdeep2905/Notch-Filter-for-Image-Processing/blob/master/imgs/Working4.PNG">
+</p>
+
+
