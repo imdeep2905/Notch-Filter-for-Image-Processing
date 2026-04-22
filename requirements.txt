@@ -1,4 +1,4 @@
-opencv-python>=4.4.0.44
+opencv-python>=4.13.0.92
 numpy>=1.18.5
 matplotlib>=3.3.2
 pillow>=7.2.0
